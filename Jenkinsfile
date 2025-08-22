@@ -36,7 +36,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withKubeconfig([credentialsId: 'kubeconfig']) {
+                    withkubeconfig([credentialsId: 'kubeconfig']) {
                         sh 'pwd'
                         sh 'cp -R helm/* .'
                         sh 'ls -1trh'
