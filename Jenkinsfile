@@ -41,7 +41,7 @@ pipeline {
                         sh 'cp -R helm/* .'
                         sh 'ls -1trh'
                         sh 'pwd'
-                        sh "helm upgrade --install petclinic-app petclinic --set image.repository=aniq47/petclinic --set image.tag=${env.BUILD_NUMBER}"
+                        sh 'helm upgrade --install petclinic-app petclinic --set image.repository=aniq47/petclinic --set image.tag=${env.BUILD_NUMBER}'
                     }
                 }
             }
