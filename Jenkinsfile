@@ -25,13 +25,25 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Fixed: Changed $(env.BUILD_NUMBER} to ${env.BUILD_NUMBER} and matched quotes
-                    def customImage = docker.build("aniq47/petclinic:${env.BUILD_NUMBER}", "./docker")
-                    
-                    // Fixed: Cleaned up the mixed single/double quotes around registry setup
+                    def customImage = docker.build("iamsakib/petclinic:${env.BUILD_NUMBER}", "./docker")
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                         customImage.push()
                     }
+                }
+            }
+        }
+
+        stage('Build on Kubernetes') {
+            steps {
+                // Wraps commands using your Jenkins Kubernetes Credentials ID
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                    sh 'pwd'
+                    // Fixed: Added space in 'cp -R'
+                    sh 'cp -R helm/* .'
+                    
+                    // Fixed: Cleaned up invalid shell syntax and properly quoted the Helm command
+                    // Also fixed Groovy variable interpolation syntax from $(BUILD_NUMBER) to ${env.BUILD_NUMBER}
+                    sh "/usr/local/bin/helm upgrade --install petclinic-app petclinic --set image.repository=iamsakib/petclinic --set image.tag=${env.BUILD_NUMBER}"
                 }
             }
         }
