@@ -1,8 +1,3 @@
-Here is the complete, unified `Jenkinsfile` with the **Build on Kubernetes** stage correctly appended at the end.
-
-I have cleaned up the trailing closing braces from your snippet to ensure the pipeline structure is syntactically perfect and ready to use:
-
-```groovy
 pipeline {
     agent any
 
@@ -49,5 +44,3 @@ pipeline {
         }
     }
 }
-
-```
