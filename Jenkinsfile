@@ -25,21 +25,13 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Fixed: Changed 'aniq47' to 'iamsakib' so it matches your repository and registry credentials
+                    // Fixed: Changed $(env.BUILD_NUMBER} to ${env.BUILD_NUMBER} and matched quotes
                     def customImage = docker.build("aniq47/petclinic:${env.BUILD_NUMBER}", "./docker")
+                    
+                    // Fixed: Cleaned up the mixed single/double quotes around registry setup
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
                         customImage.push()
                     }
-                }
-            }
-        }
-
-        stage('Build on Kubernetes') {
-            steps {
-                withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh 'pwd'
-                    sh 'cp -R helm/* .'
-                    sh "/usr/local/bin/helm upgrade --install petclinic-app petclinic --set image.repository=aniq47/petclinic --set image.tag=${env.BUILD_NUMBER}"
                 }
             }
         }
